@@ -9,17 +9,17 @@
         <el-input type="password" v-model="ruleForm.password"></el-input>
       </el-form-item>
       <el-form-item>
-        <el-row>
+        <!--<el-row>
           <el-col :span="24">
             <div class="grid-content bg-purple-dark">
               <el-button type="primary" style="width:100% ;">提交</el-button>
             </div>
           </el-col>
-        </el-row>
+        </el-row>-->
         <el-row>
           <el-col :span="12">
             <div class="grid-content bg-purple-dark">
-              <el-link type="success" @click="toLogin">用户登录</el-link>
+              <el-link type="success" @click="toregister">注册</el-link>
             </div>
           </el-col>
         </el-row>
@@ -29,19 +29,38 @@
 </template>
 
 <script>
+import axios from "axios";
 export default{
   data(){
     return{
       ruleForm:{
-        uname:'',
+        username:'',
         password:''
       }
     };
   },
   methods:{
-    toLogin(){
-      this.$router.push({
-        path:'/Login'
+    toregister(){
+      axios.post('http://localhost:8080/register',{
+        username: this.ruleForm.username,
+        password: this.ruleForm.password
+      })
+      .then(res=>{
+        if(res){
+          this.$router.push({
+            path:'/Login'
+          })
+        }
+        else{
+            this.errorMessage();
+          }
+        })
+    },
+    errorMessage() {
+      this.$message({
+        showClose: true,
+        message: '账号或密码错误，请检查！',
+        type: 'error'
       });
     }
   }

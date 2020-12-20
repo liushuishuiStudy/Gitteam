@@ -1,18 +1,18 @@
 <template>
   <div class="login-wrap">
-    <el-form :model="ruleForm" label-width="100px" class="demo-ruleForm login-container">
+    <el-form :model="loginForm" label-width="100px" class="demo-ruleForm login-container">
       <h3 style="text-align: center;">用户登录</h3>
       <el-form-item label="用户名">
-        <el-input v-model="ruleForm.username"></el-input>
+        <el-input v-model="loginForm.username"></el-input>
       </el-form-item>
       <el-form-item label="密码">
-        <el-input type="password" v-model="ruleForm.password"></el-input>
+        <el-input type="password" v-model="loginForm.password"></el-input>
       </el-form-item>
       <el-form-item>
         <el-row>
           <el-col :span="12">
             <div class="grid-content bg-purple-dark">
-              <el-button type="primary"  @click="doLogin">提交</el-button>
+              <el-button type="primary"  @click="toLogin">登录</el-button>
             </div>
           </el-col>
           <el-col :span="12">
@@ -27,13 +27,15 @@
 </template>
 
 <script>
+import axios from "axios";
+
 export default {
   data() {
     return {
-      ruleForm: {
+      loginForm: {
         username: '',
-        password: ''
-      }
+        password: '',
+      },
     };
   },
   methods: {
@@ -42,7 +44,31 @@ export default {
         path: '/register'
       });
     },
+    toLogin(){
+      axios.post('http://localhost:8080/login',{
+        username: this.loginForm.username,
+        password: this.loginForm.password
+      })
+          .then(res=>{
+            if(res){
+              this.$router.push({
+                path:'/home'
+              })
+            }
+            else{
+              this.errorMessage();
+            }
+          })
+    },
+    errorMessage() {
+      this.$message({
+        showClose: true,
+        message: '账号或密码错误，请检查！',
+        type: 'error'
+      });
+    },
     doLogin() {
+      /*登录请求
       let url = this.axios.urls.SYSTEM_USER_DOLOGIN;
       console.log(url)
       this.axios.get(url, {
@@ -65,7 +91,11 @@ export default {
 
       }).catch((response) => {
         console.log(response);
-      });
+      });*/
+      this.$router.push({
+        path: '/home',
+        query: {name:this.username}
+      })
     }
   }
 }
